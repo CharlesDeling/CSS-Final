@@ -1,0 +1,49 @@
+Resources:
+https://nvd.nist.gov/vuln/detail/CVE-2022-30625
+https://cwe.mitre.org/data/definitions/548.html
+https://www.geekbits.io/what-is-directory-traversal
+
+What is Directory Browsing:
+
+Directory Browsing, also known as Directory Traversal, is a vulnerabiltiy that allows an attacker to gain access to a directory's files and resources. This vulnerabilty can potentially be very dangerous, as the attacker has the potential to gain access to sensitive information, such as passwords and account information.
+
+Easy vs. Medium Exploit:
+
+Easy:
+
+Step 1: Log into DVWA
+
+Step 2: Click on the File Inclusion tab
+
+Step 3: Identify a file you would like to file you would like to access
+
+Step 4: Edit the URL of the page from http://localhost:(port number)/vulnerabilities/fi/?page=include.php to http://localhost:(port number)/vulnerabilities/fi/?page=../../../../../../(file path)
+	
+	For example: http://localhost:32768/vulnerabilities/fi/?page=../../../../../../etc/passwd
+
+Step 5: Click Enter key and view results 
+
+
+Medium:
+
+Step 1: Log into DVWA
+
+Step 2: Click on the File Inclusion tab
+
+Step 3: Identify a file you would like to file you would like to access
+
+Step 4: Edit the URL of the page from http://localhost:(port number)/vulnerabilities/fi/?page=include.php to http://localhost:(port number)/vulnerabilities/fi/?page=/(file path)
+
+	For example: http://localhost:32768/vulnerabilities/fi/?page=/etc/passwd
+
+Step 5: Click Enter key and view results
+
+Why it was able to be exploited:
+
+Due to the way that the website is configured, you are able to see and edit the file path that is being searched for by the page. By changing the file path, you are able to access files that you are not normally able to access, such as the file "passwd". At low level security, there is nothing stopping the user from replacing the existing file path with the absolute file path for the file that they would like to access. However, at medium security, the page now filters out directory traversal commands, such as "../" and "..\", preventing the user from using the absolute file path in the search. However, this does not prevent the user from just using the direct file path for the file they would like to access.
+
+Solutions:
+
+- Restrict access to important directories and files by adding a need-to-know access policy for the system root or the file itself.
+- Turn off features that could potentially reveal private files which could assist the attacker
+- Sanitze user input and ensure that you utilize proper file handling techniques
